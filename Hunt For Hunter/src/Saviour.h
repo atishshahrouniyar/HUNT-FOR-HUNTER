@@ -19,7 +19,7 @@ public:
 
 	void update(const std::vector<std::string>& levelData,
 		std::vector<Animal*>& animals,
-		std::vector <Poachers*>& poachers) override;
+		std::vector <Poachers*>& poachers);
 private:
 	int spriteNum;
 	GameEngine::keyHandler* _keyHandler;
