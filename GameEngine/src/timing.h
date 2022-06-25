@@ -1,11 +1,12 @@
 #pragma once
 
-namespace GameEngine {
-	class FpsLimiter {
+namespace GameEngine
+{
+	class FpsLimiter
+	{
 	public:
 		FpsLimiter();
 
-		
 		void init(float maxFPS);
 
 		void setMaxFPS(float maxFPS);
@@ -13,6 +14,7 @@ namespace GameEngine {
 		void beginFrame();
 
 		float endFrame();
+
 	private:
 		void calculateFPS();
 

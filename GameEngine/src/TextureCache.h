@@ -1,5 +1,5 @@
 #pragma once
-#include<map>
+#include <map>
 #include "texture.h"
 #include "ImageLoader.h"
 
@@ -11,8 +11,9 @@ namespace GameEngine
 		TextureCache();
 		~TextureCache();
 		GLTexture getTexture(std::string texturePath);
+
 	private:
-		std::map<std::string, GLTexture>  _textureMap;
+		std::map<std::string, GLTexture> _textureMap;
 	};
 
 }

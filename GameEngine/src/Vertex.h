@@ -2,12 +2,14 @@
 #include <glew.h>
 namespace GameEngine
 {
-	struct Position {
+	struct Position
+	{
 		float x;
 		float y;
 	};
 
-	struct Color {
+	struct Color
+	{
 		GLubyte r;
 		GLubyte g;
 		GLubyte b;
@@ -20,8 +22,6 @@ namespace GameEngine
 			b = B;
 			a = A;
 		}
-	
-
 	};
 
 	struct UV
@@ -39,7 +39,6 @@ namespace GameEngine
 		{
 			position.x = x;
 			position.y = y;
-
 		}
 		void setColor(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
 		{
@@ -47,7 +46,6 @@ namespace GameEngine
 			color.g = g;
 			color.b = b;
 			color.a = a;
-
 		}
 
 		void setUV(float u, float v)

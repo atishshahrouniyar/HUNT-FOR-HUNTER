@@ -1,11 +1,9 @@
 #include "Poachers.h"
-#include"Animal.h"
-
+#include "Animal.h"
 
 Poachers::Poachers()
 {
 }
-
 
 Poachers::~Poachers()
 {
@@ -22,29 +20,26 @@ void Poachers::init(float speed, glm::vec2 pos)
 	_color.a = 255;
 }
 
-void Poachers::update(const std::vector<std::string>& levelData,
-	std::vector<Animal*>& animals,
-	std::vector <Poachers*>& poachers)
+void Poachers::update(const std::vector<std::string> &levelData,
+					  std::vector<Animal *> &animals,
+					  std::vector<Poachers *> &poachers)
 {
-	Animal* closestAnimal = getNearestAnimal(animals);
+	Animal *closestAnimal = getNearestAnimal(animals);
 
 	if (closestAnimal != nullptr)
 	{
 		glm::vec2 direction = glm::normalize(closestAnimal->getposition() - _position);
 
 		_position += direction * _speed;
-
 	}
 
 	CollideWithLevel(levelData);
-
-
 }
 
-Animal* Poachers::getNearestAnimal(std::vector<Animal*>& animals)
+Animal *Poachers::getNearestAnimal(std::vector<Animal *> &animals)
 {
 
-	Animal* closestAnimal = nullptr;
+	Animal *closestAnimal = nullptr;
 
 	float smallestDistance = 99999999.0f;
 
@@ -58,12 +53,8 @@ Animal* Poachers::getNearestAnimal(std::vector<Animal*>& animals)
 		{
 			smallestDistance = distance;
 			closestAnimal = animals[i];
-
 		}
-
 	}
 
 	return closestAnimal;
 }
-
-

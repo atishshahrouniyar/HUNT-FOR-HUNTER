@@ -3,27 +3,24 @@
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include "Animal.h"
-#include"ctime"
-#include<random>
-#include<gtx/rotate_vector.hpp>
-
+#include "ctime"
+#include <random>
+#include <gtx/rotate_vector.hpp>
 
 Animal::Animal()
 {
 	_frames = 0;
 }
 
-
-Animal::~Animal() 
+Animal::~Animal()
 {
-	
 }
 
 void Animal::init(float speed, glm::vec2 pos)
 {
 
 	static std::mt19937 randomEngine(time(nullptr));
-	
+
 	static std::uniform_real_distribution<float> ranDir(-1.0f, 1.0f);
 
 	_health = 20;
@@ -43,18 +40,15 @@ void Animal::init(float speed, glm::vec2 pos)
 	}
 
 	_direction = glm::normalize(_direction);
-
 }
 
-
-void Animal::update(const std::vector<std::string>& levelData,
-	std::vector<Animal*>& animals,
-	std::vector <Poachers*>& poachers)
+void Animal::update(const std::vector<std::string> &levelData,
+					std::vector<Animal *> &animals,
+					std::vector<Poachers *> &poachers)
 {
 	static std::mt19937 randomEngine(time(nullptr));
 
 	static std::uniform_real_distribution<float> randRotate(-40.0f, 40.0f);
-
 
 	_position += _direction * _speed;
 
@@ -72,6 +66,5 @@ void Animal::update(const std::vector<std::string>& levelData,
 	if (CollideWithLevel(levelData))
 	{
 		_direction = glm::rotate(_direction, randRotate(randomEngine));
-
 	}
 }

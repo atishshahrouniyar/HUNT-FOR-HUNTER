@@ -1,12 +1,13 @@
 #pragma once
-#include"glew.h"
-#include"Vertex.h"
-#include"glm.hpp"
-#include<vector>
+#include "glew.h"
+#include "Vertex.h"
+#include "glm.hpp"
+#include <vector>
 namespace GameEngine
 {
-	
-	struct Glyph {
+
+	struct Glyph
+	{
 		GLuint texture;
 		float depth;
 
@@ -19,9 +20,9 @@ namespace GameEngine
 	class RenderBatch
 	{
 	public:
-		RenderBatch(GLuint Offset,GLuint Numvertices,GLuint texture):OffSet(Offset),
-			NumVertices(Numvertices),
-			Texture(texture) {}
+		RenderBatch(GLuint Offset, GLuint Numvertices, GLuint texture) : OffSet(Offset),
+																		 NumVertices(Numvertices),
+																		 Texture(texture) {}
 		GLuint OffSet;
 		GLuint NumVertices;
 		GLuint Texture;
@@ -34,16 +35,16 @@ namespace GameEngine
 		~SpriteBatch();
 		void init();
 		void begin();
-		void  end();
-		void draw(const glm::vec4& DestRect, const glm::vec4& UVRect, GLuint texture, float depth, const Color& color);
+		void end();
+		void draw(const glm::vec4 &DestRect, const glm::vec4 &UVRect, GLuint texture, float depth, const Color &color);
 		void renderBatch();
 
 	private:
 		void CreateRenderBatches();
-		void  CreateVertexArray();
+		void CreateVertexArray();
 		GLuint Vbo;
 		GLuint Vao;
-		std::vector<Glyph*>  Glyphs;
+		std::vector<Glyph *> Glyphs;
 		std::vector<RenderBatch> RenderBatches;
 	};
 }

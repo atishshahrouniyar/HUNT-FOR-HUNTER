@@ -1,6 +1,6 @@
 #pragma once
-#include"Agent.h"
-class Animal:public Agent
+#include "Agent.h"
+class Animal : public Agent
 {
 public:
 	Animal();
@@ -8,14 +8,11 @@ public:
 
 	void init(float speed, glm::vec2 pos);
 
-	virtual void update(const std::vector<std::string>& levelData,
-		std::vector<Animal*>& animals,
-		std::vector <Poachers*>& poachers);
-	
+	virtual void update(const std::vector<std::string> &levelData,
+						std::vector<Animal *> &animals,
+						std::vector<Poachers *> &poachers);
 
 private:
 	glm::vec2 _direction;
 	int _frames;
-
 };
-

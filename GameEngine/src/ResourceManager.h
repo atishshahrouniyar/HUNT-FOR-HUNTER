@@ -7,7 +7,7 @@ namespace GameEngine
 	{
 	public:
 		static GLTexture getTexture(std::string texturePath);
-		//static GLuint _boundTexture;
+		// static GLuint _boundTexture;
 	private:
 		static TextureCache _textureCache;
 	};

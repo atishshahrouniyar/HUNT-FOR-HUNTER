@@ -1,36 +1,33 @@
 #include "Bullets.h"
-#include"ResourceManager.h"
-#include"Agent.h"
-#include"Animal.h"
-#include"Poachers.h"
-#include"Level.h"
-Bullets::Bullets(glm::vec2 position, glm::vec2 direction, float damage, float speed):
-	_position(position),
-	_direction(direction),
-	_damage(damage),
-	_speed(speed)
+#include "ResourceManager.h"
+#include "Agent.h"
+#include "Animal.h"
+#include "Poachers.h"
+#include "Level.h"
+Bullets::Bullets(glm::vec2 position, glm::vec2 direction, float damage, float speed) : _position(position),
+																					   _direction(direction),
+																					   _damage(damage),
+																					   _speed(speed)
 
 {
 }
-
 
 Bullets::~Bullets()
 {
 }
 
-bool Bullets::update(const std::vector<std::string>& levelData)
+bool Bullets::update(const std::vector<std::string> &levelData)
 {
 	_position += _direction * _speed;
 	return collideWithWorld(levelData);
-
 }
 
-void Bullets::draw(GameEngine::SpriteBatch& spriteBatch)
+void Bullets::draw(GameEngine::SpriteBatch &spriteBatch)
 {
 	glm::vec4 destRect(_position.x + BULLET_RADIUS,
-		_position.y + BULLET_RADIUS,
-		BULLET_RADIUS*2,
-		BULLET_RADIUS*2);
+					   _position.y + BULLET_RADIUS,
+					   BULLET_RADIUS * 2,
+					   BULLET_RADIUS * 2);
 	const glm::vec4 uvRect(0.0f, 0.0f, 1.0f, 1.0f);
 
 	GameEngine::Color color;
@@ -42,7 +39,7 @@ void Bullets::draw(GameEngine::SpriteBatch& spriteBatch)
 	spriteBatch.draw(destRect, uvRect, GameEngine::ResourceManager::getTexture("textures/bullet.png").id, 0.0f, color);
 }
 
-bool Bullets::collideWithAgent(Agent* agent)
+bool Bullets::collideWithAgent(Agent *agent)
 {
 	const float MIN_DISTANCE = AGENT_RADIUS + BULLET_RADIUS;
 
@@ -57,15 +54,14 @@ bool Bullets::collideWithAgent(Agent* agent)
 	if (collisionDepth > 0)
 	{
 
-		//glm::vec2 collisionDepthVec = glm::normalize(distVec)* collisionDepth;
+		// glm::vec2 collisionDepthVec = glm::normalize(distVec)* collisionDepth;
 
 		return true;
 	}
 	return false;
-
 }
 
-bool Bullets::collideWithWorld(const std::vector<std::string>& levelData)
+bool Bullets::collideWithWorld(const std::vector<std::string> &levelData)
 {
 	glm::ivec2 gridPosition;
 	gridPosition.x = floor(_position.x / (float)TILE_WIDTH);
@@ -78,6 +74,4 @@ bool Bullets::collideWithWorld(const std::vector<std::string>& levelData)
 	}
 
 	return (levelData[gridPosition.y][gridPosition.x] != '.');
-
-
 }

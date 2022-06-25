@@ -1,5 +1,5 @@
 #include "ImageLoader.h"
-#define	STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 //#include "IOManager.h"
 #include <fstream>
@@ -10,8 +10,7 @@ namespace GameEngine
 	{
 		GLTexture texture = {};
 		int x, y, n;
-		unsigned char* pixels = stbi_load(filePath.c_str(), &x, &y, &n, 4);
-
+		unsigned char *pixels = stbi_load(filePath.c_str(), &x, &y, &n, 4);
 
 		glGenTextures(1, &(texture.id));
 		glBindTexture(GL_TEXTURE_2D, texture.id);

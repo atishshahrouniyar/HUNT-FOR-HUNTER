@@ -7,7 +7,6 @@ namespace GameEngine
 	{
 	}
 
-
 	Windows::~Windows()
 	{
 	}
@@ -29,7 +28,6 @@ namespace GameEngine
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
 
-
 		_sdlWindow = SDL_CreateWindow(WindowName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ScreenWidth, ScreenHeight, flags);
 		if (_sdlWindow == nullptr)
 		{
@@ -46,7 +44,7 @@ namespace GameEngine
 			Error(ErrorCode::GLEWNotLoaded, "GLEW", "Could not initialize");
 		}
 
-		//std::printf("*** OpenGL Version: %s ***", glGetString(GL_VERSION));
+		// std::printf("*** OpenGL Version: %s ***", glGetString(GL_VERSION));
 
 		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
@@ -57,7 +55,7 @@ namespace GameEngine
 		return 0;
 	}
 
-	void  Windows::swapBuffer()
+	void Windows::swapBuffer()
 	{
 		SDL_GL_SwapWindow(_sdlWindow);
 	}

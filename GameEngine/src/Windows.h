@@ -1,11 +1,16 @@
 #pragma once
-#include<SDL.h>
-#include<glew.h>
-#include<string>
+#include <SDL.h>
+#include <glew.h>
+#include <string>
 
 namespace GameEngine
 {
-	enum Windowflags { INVISIBLE = 0x1, FULLSCREEN = 0x2, BORDERLESS = 0x4 };
+	enum Windowflags
+	{
+		INVISIBLE = 0x1,
+		FULLSCREEN = 0x2,
+		BORDERLESS = 0x4
+	};
 
 	class Windows
 	{
@@ -22,8 +27,9 @@ namespace GameEngine
 			return _screenHeight;
 		}
 		void swapBuffer();
+
 	private:
-		SDL_Window* _sdlWindow;
+		SDL_Window *_sdlWindow;
 		int _screenWidth, _screenHeight;
 	};
 }

@@ -1,33 +1,31 @@
 #include "maingame.h"
-#include"Poachers.h"
-#include"Gun.h"
+#include "Poachers.h"
+#include "Gun.h"
 #include "Common.h"
 #include <iostream>
 #include <string>
 #include <timing.h>
 #include "glm.hpp"
-#include<random>
-#include<ctime>
+#include <random>
+#include <ctime>
 #include "Vertex.h"
 
-
 #include <fstream>
-
 
 const float ANIMAL_SPEED = 1.0f;
 const float POACHER_SPEED = 1.3f;
 
-maingame::maingame() :
-	_screenWidth(1000),
-	_screenHeight(600),
-	_fps(0),
-	_saviour(nullptr),
-	_numAnimalsKilled(0),
-	_numPoachersKilled(0),
-	_gameState(GameState::START),
-	isGameWon(false),
-	isNewHighscore(false)
-{}
+maingame::maingame() : _screenWidth(1000),
+					   _screenHeight(600),
+					   _fps(0),
+					   _saviour(nullptr),
+					   _numAnimalsKilled(0),
+					   _numPoachersKilled(0),
+					   _gameState(GameState::START),
+					   isGameWon(false),
+					   isNewHighscore(false)
+{
+}
 
 maingame::~maingame()
 {
@@ -48,21 +46,20 @@ maingame::~maingame()
 		delete _poachers[i];
 	}
 	_animals.clear();
-
 }
 
 void maingame::run()
 {
-	initSystems();  // To start the system 
-	initLevel();  //To load the level data
+	initSystems(); // To start the system
+	initLevel();   // To load the level data
 	menuFrameCount = 0;
-	gameLoop();  // To start the game
+	gameLoop(); // To start the game
 }
 
 void maingame::initSystems()
 {
 	GameEngine::init();
-	_window.create("Hunt For  Hunter", _screenWidth, _screenHeight,0);
+	_window.create("Hunt For  Hunter", _screenWidth, _screenHeight, 0);
 	glClearColor(0.0f, 0.41f, 0.0f, 0.0f);
 	initShaders();
 
@@ -70,7 +67,6 @@ void maingame::initSystems()
 
 	_agentSpriteBatch.init();
 
-	
 	camera.init(_screenWidth, _screenHeight);
 }
 
@@ -80,31 +76,30 @@ void maingame::initLevel()
 
 	_currentLevel = 0;
 	_saviour = new Saviour();
-	_saviour->init(4.0f, _levels[_currentLevel]->getStartSaviourPos(), &_keyHandler,&camera,&_bullets);
+	_saviour->init(4.0f, _levels[_currentLevel]->getStartSaviourPos(), &_keyHandler, &camera, &_bullets);
 
 	_animals.push_back(_saviour);
 
-	 std::mt19937 randomEngine;
-	 randomEngine.seed(time(nullptr));
-	 std::uniform_int_distribution<int> randX(2, _levels[_currentLevel]->getWidth() - 2);
-	 std::uniform_int_distribution<int> randY(2, _levels[_currentLevel]->getHeight() - 2);
+	std::mt19937 randomEngine;
+	randomEngine.seed(time(nullptr));
+	std::uniform_int_distribution<int> randX(2, _levels[_currentLevel]->getWidth() - 2);
+	std::uniform_int_distribution<int> randY(2, _levels[_currentLevel]->getHeight() - 2);
 
 	for (int i = 0; i < _levels[_currentLevel]->getNumAnimals(); i++)
 	{
 		_animals.push_back(new Animal);
-		glm::vec2 pos(randX(randomEngine)*TILE_WIDTH, randY(randomEngine)*TILE_WIDTH);
+		glm::vec2 pos(randX(randomEngine) * TILE_WIDTH, randY(randomEngine) * TILE_WIDTH);
 		_animals.back()->init(ANIMAL_SPEED, pos);
 	}
 
-	const std::vector<glm::vec2>& poacherPositions = _levels[_currentLevel]->getStartPoacherPos();
+	const std::vector<glm::vec2> &poacherPositions = _levels[_currentLevel]->getStartPoacherPos();
 	for (int i = 0; i < poacherPositions.size(); i++)
 	{
 		_poachers.push_back(new Poachers);
 		_poachers.back()->init(POACHER_SPEED, poacherPositions[i]);
-
 	}
 	const float BULLET_SPEED = 20.0f;
-	//string name,int fireRate,int bulletsPerShot,float spread ,float bulletDamage,float bulletSpeed
+	// string name,int fireRate,int bulletsPerShot,float spread ,float bulletDamage,float bulletSpeed
 	_saviour->addGun(new Gun("Magnum", 10, 1, 5.0f, 30.0f, BULLET_SPEED));
 	_saviour->addGun(new Gun("Shotgun", 30, 12, 20.0f, 4, BULLET_SPEED));
 	_saviour->addGun(new Gun("MP5", 2, 1, 10.0f, 20.0f, BULLET_SPEED));
@@ -124,18 +119,20 @@ void maingame::gameLoop()
 	GameEngine::FpsLimiter fpsLimiter;
 	fpsLimiter.setMaxFPS(60.0f);
 	while (_gameState != GameState::EXIT)
-    {
-		if (_gameState == GameState::START) {
+	{
+		if (_gameState == GameState::START)
+		{
 			fpsLimiter.beginFrame();
 
 			processConsoleInput();
 			drawConsole();
-			
+
 			_fps = fpsLimiter.endFrame();
 		}
-		if (_gameState == GameState::PLAY) {
+		if (_gameState == GameState::PLAY)
+		{
 			fpsLimiter.beginFrame();
-			
+
 			checkVictory();
 
 			processInput();
@@ -146,42 +143,41 @@ void maingame::gameLoop()
 			camera.setPosition(_saviour->getposition());
 
 			camera.update();
-			
+
 			drawGame();
 
 			_fps = fpsLimiter.endFrame();
 		}
-		
 	}
 }
 
 void maingame::updateAgents()
 {
-	//Update all the animals
+	// Update all the animals
 	for (int i = 0; i < _animals.size(); i++)
 	{
 		_animals[i]->update(_levels[_currentLevel]->getLevelData(),
-			_animals,
-			_poachers);
+							_animals,
+							_poachers);
 	}
 
-	//Update all the poachers
+	// Update all the poachers
 	for (int i = 0; i < _poachers.size(); i++)
 	{
 		_poachers[i]->update(_levels[_currentLevel]->getLevelData(),
-			_animals,
-			_poachers);
+							 _animals,
+							 _poachers);
 	}
 
-	//Update poacher collision
+	// Update poacher collision
 	for (int i = 0; i < _poachers.size(); i++)
 	{
-		//collide with other poachers
+		// collide with other poachers
 		for (int j = i + 1; j < _poachers.size(); j++)
 		{
 			_poachers[i]->collideWithAgent(_poachers[j]);
 		}
-		//collide with animals
+		// collide with animals
 		for (int j = 1; j < _animals.size(); j++)
 		{
 			if (_poachers[i]->collideWithAgent(_animals[j]))
@@ -191,86 +187,85 @@ void maingame::updateAgents()
 				_animals.pop_back();
 			}
 		}
-		//Collision of saviour and poachers 
+		// Collision of saviour and poachers
 		if (_poachers[i]->collideWithAgent(_saviour))
 		{
-			
+
 			char key = ' ';
-			std::cout << "!!! YOU LOOSE !!!"<<std::endl<<"You were captured by poachers and cannot save the protected area(Jungle)" << std::endl;
-			while (key != 'q') {
+			std::cout << "!!! YOU LOOSE !!!" << std::endl
+					  << "You were captured by poachers and cannot save the protected area(Jungle)" << std::endl;
+			while (key != 'q')
+			{
 				std::cout << "Press 'q' to Quit." << std::endl;
 				std::cin >> key;
 				if (key == 'q')
 					exit(69);
 			}
 		}
-
 	}
 
-	//Update animals collision
+	// Update animals collision
 
 	for (int i = 0; i < _animals.size(); i++)
 	{
 		// Collide with other animals
-		for (int j = i+1; j < _animals.size(); j++)
+		for (int j = i + 1; j < _animals.size(); j++)
 		{
 			_animals[i]->collideWithAgent(_animals[j]);
 		}
 	}
-
 }
 
-void  maingame::updateBullets()
+void maingame::updateBullets()
 {
-	//Update and collide with world
-	for (int i = 0; i < _bullets.size(); )
+	// Update and collide with world
+	for (int i = 0; i < _bullets.size();)
 	{
 		if (_bullets[i].update(_levels[_currentLevel]->getLevelData()))
 		{
 			_bullets[i] = _bullets.back();
 			_bullets.pop_back();
 		}
-		else 
+		else
 			i++;
 	}
 
 	bool wasBulletRemoved;
 
-	//Collide with animals and poachers
-	for (int i = 0; i < _bullets.size();i++ )
+	// Collide with animals and poachers
+	for (int i = 0; i < _bullets.size(); i++)
 	{
 
 		wasBulletRemoved = false;
 
-		//Loop through poachers
-		for (int j = 0; j < _poachers.size(); )
+		// Loop through poachers
+		for (int j = 0; j < _poachers.size();)
 		{
 			if (_bullets[i].collideWithAgent(_poachers[j]))
 			{
 
-				//Kill the poacher if it is out of health
+				// Kill the poacher if it is out of health
 				if (_poachers[j]->applyDamage(_bullets[i].getDamage()))
 				{
-					//Remove the poacher if dead
+					// Remove the poacher if dead
 					delete _poachers[j];
 					_poachers[j] = _poachers.back();
 					_poachers.pop_back();
 					_numPoachersKilled++;
-					
 				}
 				else
 				{
 					j++;
 				}
 
-				//Remove the bullet
+				// Remove the bullet
 				_bullets[i] = _bullets.back();
 				_bullets.pop_back();
 
 				wasBulletRemoved = true;
-				i--; //We don't skip any bullet 
+				i--; // We don't skip any bullet
 
-				//Since the bullet is dead
+				// Since the bullet is dead
 				break;
 			}
 			else
@@ -278,21 +273,20 @@ void  maingame::updateBullets()
 				j++;
 			}
 		}
-		
 
-		//Loop through animals
+		// Loop through animals
 		if (wasBulletRemoved == false)
 		{
-			for (int j = 1; j < _animals.size(); )
+			for (int j = 1; j < _animals.size();)
 			{
-				//check collision
+				// check collision
 				if (_bullets[i].collideWithAgent(_animals[j]))
 				{
 
-					//Kill the animal if it is out of health
+					// Kill the animal if it is out of health
 					if (_animals[j]->applyDamage(_bullets[i].getDamage()))
 					{
-						//Remove the animal if dead
+						// Remove the animal if dead
 						delete _animals[j];
 						_animals[j] = _animals.back();
 						_animals.pop_back();
@@ -302,13 +296,13 @@ void  maingame::updateBullets()
 						j++;
 					}
 
-					//Remove the bullet
+					// Remove the bullet
 					_bullets[i] = _bullets.back();
 					_bullets.pop_back();
 					_numAnimalsKilled++;
-					i--; //We don't skip any bullet 
+					i--; // We don't skip any bullet
 
-					//Since the bullet is dead
+					// Since the bullet is dead
 					break;
 				}
 				else
@@ -316,11 +310,8 @@ void  maingame::updateBullets()
 					j++;
 				}
 			}
-
 		}
-
 	}
-
 }
 
 void maingame::checkVictory()
@@ -329,21 +320,25 @@ void maingame::checkVictory()
 	{
 		readHighscore();
 
-		if (_animals.size() - 1 > prevHighscore) {
+		if (_animals.size() - 1 > prevHighscore)
+		{
 			saveHighscore();
 			isNewHighscore = true;
 		}
-		
-		std::cout << "!!! YOU WIN !!!"<<std::endl<<"You saved the jungle from all the poachers" << std::endl;
+
+		std::cout << "!!! YOU WIN !!!" << std::endl
+				  << "You saved the jungle from all the poachers" << std::endl;
 		std::printf("You killed %d Animals and %d poachers.\nThere are %d/%d Animals remaining.",
-			_numAnimalsKilled,_numPoachersKilled,_animals.size()-1,_levels[_currentLevel]->getNumAnimals());
-		if (isNewHighscore) {
-			std::cout << "Congratulations you have got new highscore of " << _animals.size()-1 << '\n';
+					_numAnimalsKilled, _numPoachersKilled, _animals.size() - 1, _levels[_currentLevel]->getNumAnimals());
+		if (isNewHighscore)
+		{
+			std::cout << "Congratulations you have got new highscore of " << _animals.size() - 1 << '\n';
 		}
-		
+
 		std::cout << "Press Enter to Quit." << std::endl;
-		char key =  ' ';
-		while (key != 'q') {
+		char key = ' ';
+		while (key != 'q')
+		{
 			std::cout << "Press 'q' to Quit." << std::endl;
 			std::cin >> key;
 			if (key == 'q')
@@ -354,12 +349,14 @@ void maingame::checkVictory()
 	if (_animals.size() == 1)
 	{
 
-		std::cout << "!!! YOU LOOSE !!!" << std::endl << "You couldn't save the animals of jungle" << std::endl;
+		std::cout << "!!! YOU LOOSE !!!" << std::endl
+				  << "You couldn't save the animals of jungle" << std::endl;
 		std::printf("You killed %d Animals and %d poachers.\nThere are %d Poachers remaining.",
-			_numAnimalsKilled, _numPoachersKilled, _poachers.size());
+					_numAnimalsKilled, _numPoachersKilled, _poachers.size());
 		std::cout << "Press Enter to Quit." << std::endl;
 		char key = ' ';
-		while (key != 'q') {
+		while (key != 'q')
+		{
 			std::cout << "Press 'q' to Quit." << std::endl;
 			std::cin >> key;
 			if (key == 'q')
@@ -378,49 +375,50 @@ void maingame::processInput()
 	{
 		switch (evnt.type)
 		{
-			case SDL_QUIT:
-				_gameState = GameState::EXIT;
-				break;
-			case SDL_MOUSEMOTION:
-				_keyHandler.setMouseCoordinates(evnt.motion.x, evnt.motion.y);
-				break;
-			case SDL_KEYDOWN:
-				_keyHandler.keyPress(evnt.key.keysym.sym);
-				break;
-			case  SDL_KEYUP:
-				_keyHandler.keyRelease(evnt.key.keysym.sym);
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				_keyHandler.keyPress(evnt.button.button);
-				break;
-			case SDL_MOUSEBUTTONUP:
-				_keyHandler.keyRelease(evnt.button.button);
-				break; 
+		case SDL_QUIT:
+			_gameState = GameState::EXIT;
+			break;
+		case SDL_MOUSEMOTION:
+			_keyHandler.setMouseCoordinates(evnt.motion.x, evnt.motion.y);
+			break;
+		case SDL_KEYDOWN:
+			_keyHandler.keyPress(evnt.key.keysym.sym);
+			break;
+		case SDL_KEYUP:
+			_keyHandler.keyRelease(evnt.key.keysym.sym);
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			_keyHandler.keyPress(evnt.button.button);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			_keyHandler.keyRelease(evnt.button.button);
+			break;
 		}
 	}
 
-	if (_keyHandler.iskeyPressed( SDLK_w))
+	if (_keyHandler.iskeyPressed(SDLK_w))
 		camera.setPosition(camera.getPosition() + glm::vec2(0.0f, CameraSpeed));
 
-	if (_keyHandler.iskeyPressed( SDLK_s))
+	if (_keyHandler.iskeyPressed(SDLK_s))
 		camera.setPosition(camera.getPosition() - glm::vec2(0.0f, CameraSpeed));
-	
-	if (_keyHandler.iskeyPressed( SDLK_a))
+
+	if (_keyHandler.iskeyPressed(SDLK_a))
 		camera.setPosition(camera.getPosition() + glm::vec2(-CameraSpeed, 0.0f));
-	if (_keyHandler.iskeyPressed( SDLK_d))
+	if (_keyHandler.iskeyPressed(SDLK_d))
 		camera.setPosition(camera.getPosition() + glm::vec2(CameraSpeed, 0.0f));
-		
-	if (_keyHandler.iskeyPressed( SDLK_EQUALS))
+
+	if (_keyHandler.iskeyPressed(SDLK_EQUALS))
 		camera.setScale(camera.getScale() + ScaleSpeed);
-		
-	if (_keyHandler.iskeyPressed(SDLK_MINUS)) {
+
+	if (_keyHandler.iskeyPressed(SDLK_MINUS))
+	{
 		if (camera.getScale() > 0.5)
 			camera.setScale(camera.getScale() - ScaleSpeed);
 	}
-	
 }
 
-void maingame::processConsoleInput(){
+void maingame::processConsoleInput()
+{
 	SDL_Event evnt;
 
 	while (SDL_PollEvent(&evnt))
@@ -433,15 +431,14 @@ void maingame::processConsoleInput(){
 		case SDL_KEYDOWN:
 			if (evnt.key.keysym.sym == SDLK_RETURN || evnt.key.keysym.sym == SDLK_KP_ENTER)
 				_gameState = GameState::PLAY;
-			else if(evnt.key.keysym.sym == SDLK_q)
+			else if (evnt.key.keysym.sym == SDLK_q)
 				_gameState = GameState::EXIT;
 		}
 	}
-
 }
 
-void maingame::drawConsole() {
-	
+void maingame::drawConsole()
+{
 
 	GLError(glClearDepth(1.0));
 	GLError(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -457,13 +454,16 @@ void maingame::drawConsole() {
 
 	glUniformMatrix4fv(pUniform, 1, GL_FALSE, &projectionMatrix[0][0]);
 	GLuint menuTexture;
-	if (menuFrameCount < 20) {
+	if (menuFrameCount < 20)
+	{
 		menuTexture = GameEngine::ResourceManager::getTexture("textures/front-menu.png").id;
 	}
-	else if (menuFrameCount < 40) {
+	else if (menuFrameCount < 40)
+	{
 		menuTexture = GameEngine::ResourceManager::getTexture("textures/front-menu-up.png").id;
 	}
-	else {
+	else
+	{
 		menuTexture = GameEngine::ResourceManager::getTexture("textures/front-menu.png").id;
 		menuFrameCount = 0;
 	}
@@ -472,11 +472,10 @@ void maingame::drawConsole() {
 	GameEngine::Color color;
 	color.setColor(255, 255, 255, 255);
 
-
 	consoleSprites.begin();
 	consoleSprites.draw(destRect, uvRect, menuTexture, 0.0f, color);
 	consoleSprites.end();
-	
+
 	consoleSprites.renderBatch();
 	_textureProgram.unuse();
 
@@ -484,7 +483,7 @@ void maingame::drawConsole() {
 	menuFrameCount++;
 }
 
-//Draw animals,poachers,bullets and saviour
+// Draw animals,poachers,bullets and saviour
 
 void maingame::drawGame()
 {
@@ -502,7 +501,6 @@ void maingame::drawGame()
 	GLint pUniform = _textureProgram.getUniformLocation("P");
 
 	glUniformMatrix4fv(pUniform, 1, GL_FALSE, &projectionMatrix[0][0]);
-
 
 	_levels[_currentLevel]->draw();
 
@@ -529,11 +527,11 @@ void maingame::drawGame()
 	_textureProgram.unuse();
 
 	_window.swapBuffer();
-
 }
 
-//For reading the high score
-void maingame::readHighscore() {
+// For reading the high score
+void maingame::readHighscore()
+{
 
 	std::string scorestring;
 
@@ -543,8 +541,9 @@ void maingame::readHighscore() {
 
 	ScoreFile.close();
 }
-//For saving the high score
-void maingame::saveHighscore() {
+// For saving the high score
+void maingame::saveHighscore()
+{
 
 	std::ofstream Highscorefile("score/highscore", std::ofstream::out);
 	Highscorefile << _animals.size() << std::endl;

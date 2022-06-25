@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL.h>
-#include"GameEngine.h"
+#include "GameEngine.h"
 #include "GLSLProgram.h"
 #include <vector>
 #include "texture.h"
@@ -10,21 +10,26 @@
 #include "keyHandler.h"
 #include "timing.h"
 #include "Level.h"
-#include"Bullets.h"
-#include"Saviour.h"
+#include "Bullets.h"
+#include "Saviour.h"
 #include "ResourceManager.h"
 
 class Poachers;
 
-enum class GameState {START, PLAY, EXIT}; 
+enum class GameState
+{
+	START,
+	PLAY,
+	EXIT
+};
 class maingame
 {
 public:
 	maingame();
 	~maingame();
 	void run();
+
 private:
-	
 	void initSystems();
 	void initLevel();
 
@@ -37,19 +42,17 @@ private:
 
 	void checkVictory();
 
-
 	void processInput();
 	void processConsoleInput();
 
 	void drawGame();
 	void drawConsole();
-	
+
 	void readHighscore();
 	void saveHighscore();
-	
+
 	int _screenWidth;
 	int _screenHeight;
-
 
 	int _numAnimalsKilled;
 	int _numPoachersKilled;
@@ -67,7 +70,7 @@ private:
 	bool isNewHighscore;
 
 	GameEngine::Windows _window;
-	
+
 	GameEngine::GLSLProgram _textureProgram;
 
 	GameEngine::Camera2D camera;
@@ -78,18 +81,15 @@ private:
 
 	GameEngine::SpriteBatch consoleSprites;
 
-	GameEngine::keyHandler _keyHandler ;
-	
-	std::vector<Level*> _levels;
+	GameEngine::keyHandler _keyHandler;
 
-	Saviour* _saviour;
-	std::vector<Animal*> _animals;
-	std::vector<Poachers*> _poachers;
+	std::vector<Level *> _levels;
 
+	Saviour *_saviour;
+	std::vector<Animal *> _animals;
+	std::vector<Poachers *> _poachers;
 
 	std::vector<Bullets> _bullets;
 
 	GameState _gameState;
-	
 };
-

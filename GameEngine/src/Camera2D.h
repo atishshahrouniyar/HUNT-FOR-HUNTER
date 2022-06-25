@@ -1,6 +1,6 @@
 #pragma once
-#include"glm.hpp"
-#include"gtc/matrix_transform.hpp"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 namespace GameEngine
 {
@@ -12,8 +12,7 @@ namespace GameEngine
 		void init(int screenWidth, int screenHeight);
 		void update();
 
-
-		void setPosition(const glm::vec2& newPosition)
+		void setPosition(const glm::vec2 &newPosition)
 		{
 			position = newPosition;
 			needsMatrixUpdate = true;
@@ -45,7 +44,6 @@ namespace GameEngine
 		glm::vec2 position;
 		glm::mat4 cameraMatrix;
 		glm::mat4 orthoMatrix;
-
 	};
 
 }

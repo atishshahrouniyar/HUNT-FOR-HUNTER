@@ -1,19 +1,17 @@
 #include "Saviour.h"
-#include"SDL.h"
+#include "SDL.h"
 //#include"Bullets.h"
-#include"Gun.h"
-Saviour::Saviour():
-	_currentGunIndex(-1)
+#include "Gun.h"
+Saviour::Saviour() : _currentGunIndex(-1)
 {
 	spriteNum = 18;
 }
-
 
 Saviour::~Saviour()
 {
 }
 
-void Saviour::init(float speed, glm::vec2 pos, GameEngine::keyHandler* keyHandler, GameEngine::Camera2D* camera, std::vector<Bullets>* bullets)
+void Saviour::init(float speed, glm::vec2 pos, GameEngine::keyHandler *keyHandler, GameEngine::Camera2D *camera, std::vector<Bullets> *bullets)
 {
 	_speed = speed;
 	_position = pos;
@@ -25,10 +23,9 @@ void Saviour::init(float speed, glm::vec2 pos, GameEngine::keyHandler* keyHandle
 	_color.b = 106;
 	_color.a = 255;
 	_health = 150;
-
 }
 
-void Saviour::addGun(Gun* gun)
+void Saviour::addGun(Gun *gun)
 {
 	_guns.push_back(gun);
 
@@ -36,12 +33,11 @@ void Saviour::addGun(Gun* gun)
 	{
 		_currentGunIndex = 0;
 	}
-
 }
 
-void Saviour::update(const std::vector<std::string>& levelData,
-	std::vector<Animal*>& animals,
-	std::vector <Poachers*>& poachers)
+void Saviour::update(const std::vector<std::string> &levelData,
+					 std::vector<Animal *> &animals,
+					 std::vector<Poachers *> &poachers)
 {
 	if (_keyHandler->iskeyPressed(SDLK_w))
 	{
@@ -97,18 +93,13 @@ void Saviour::update(const std::vector<std::string>& levelData,
 
 		glm::vec2 centerPosition = _position + glm::vec2(AGENT_RADIUS);
 
-		glm::vec2 direction= glm::normalize(mouseCoords - centerPosition);
-
+		glm::vec2 direction = glm::normalize(mouseCoords - centerPosition);
 
 		_guns[_currentGunIndex]->update(_keyHandler->iskeyPressed(SDL_BUTTON_LEFT),
-			centerPosition,
-			direction,
-			*_bullets);
+										centerPosition,
+										direction,
+										*_bullets);
 	}
 
-
 	CollideWithLevel(levelData);
-
-
-
 }

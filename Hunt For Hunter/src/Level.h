@@ -25,7 +25,7 @@ public:
 		return _numAnimals;
 	}
 
-	const std::vector<std::string>& getLevelData() const
+	const std::vector<std::string> &getLevelData() const
 	{
 		return _leveldata;
 	}
@@ -35,7 +35,7 @@ public:
 		return _startSaviourPos;
 	}
 
-	const std::vector<glm::vec2>& getStartPoacherPos() const
+	const std::vector<glm::vec2> &getStartPoacherPos() const
 	{
 		return _poacherStartPosition;
 	}
@@ -47,4 +47,3 @@ private:
 	glm::ivec2 _startSaviourPos;
 	std::vector<glm::vec2> _poacherStartPosition;
 };
-
